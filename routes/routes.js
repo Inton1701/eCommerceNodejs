@@ -10,6 +10,9 @@ const cart = require('../controllers/cart_controller');
 router.get('/', user.index);
 router.get('/login', user.login);
 router.get('/register', user.register);
+router.post('/signup', user.signup);
+router.post('/authenticate', user.authenticate);
+
 //Thiena
 
 
