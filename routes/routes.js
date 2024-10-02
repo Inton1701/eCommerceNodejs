@@ -8,7 +8,8 @@ const cart = require('../controllers/cart_controller');
 
 // Ariston
 router.get('/', user.index);
-
+router.get('/login', user.login);
+router.get('/register', user.register);
 //Thiena
 
 
