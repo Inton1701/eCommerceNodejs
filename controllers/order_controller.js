@@ -1,8 +1,13 @@
 const order = require('../models/order_model');
-// Ariston
 
-
-//Thiena
-
-
-//Cael
+const orders = {
+    // Ariston
+    
+    
+    //Thiena
+    
+    
+    //Cael
+    }
+    
+    module.exports = orders;

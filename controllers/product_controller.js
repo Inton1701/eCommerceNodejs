@@ -1,8 +1,12 @@
 const product = require('../models/product_model');
-// Ariston
-
-
-//Thiena
-
-
-//Cael
+const products = {
+    // Ariston
+    
+    
+    //Thiena
+    
+    
+    //Cael
+    }
+    
+    module.exports = products;

@@ -1,4 +1,6 @@
 const cart = require('../models/cart_model');
+
+const carts = {
 // Ariston
 
 
@@ -6,3 +8,6 @@ const cart = require('../models/cart_model');
 
 
 //Cael
+}
+
+module.exports = carts;

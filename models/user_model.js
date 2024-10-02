@@ -1,13 +1,14 @@
 const db = require('../config/database');
-// Ariston
+
 const user = {
-
-}
-
-
+    // Ariston
 //Thiena
 
 
 //Cael
+}
+
+
+
 
 exports.modle = user
