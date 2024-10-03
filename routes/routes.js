@@ -16,7 +16,8 @@ router.post('/signup', user.signup);
 router.post('/authenticate', user.authenticate);
 router.get('/logout', user.logout);
 router.get('/view-product', user.view_product);
-
+router.get('/cart', user.cart);
+router.get('/checkout', user.checkout);
 //Thiena
 
 

@@ -126,6 +126,21 @@ const users = {
       res.redirect('/login');  // Redirect to login if session is not present
     }
   },
+  cart: (req, res) => {
+    if (req.session.email) {
+      res.render('cart', { email: req.session.email });
+    } else {
+      res.redirect('/login');  // Redirect to login if session is not present
+    }
+  },
+  checkout:
+  (req, res) => {
+    if (req.session.email) {
+      res.render('checkout', { email: req.session.email });
+    } else {
+      res.redirect('/login');  // Redirect to login if session is not present
+    }
+  },
 
 }
 

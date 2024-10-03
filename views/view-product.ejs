@@ -1,40 +1,100 @@
 <%- include('partials/start') %>
 <%- include('partials/navbar') %>
-<%- include('partials/end') %>
+
+
 <style>
-     input[type="number"]::-webkit-outer-spin-button,
-        input[type="number"]::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
 </style>
+
+<div class="bg-light py-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 mb-0"><a href="/home">Home</a> <span class="mx-2 mb-0">/</span><a href="/shop">Shop</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">View Product</strong></div>
+        </div>
+    </div>
+</div>
+
 <div class="site-section">
     <div class="container">
-      <div class="row">
-        <div class="col-md-6">
-          <img src="assets/ariston/images/cloth_1.jpg" alt="Image" class="img-fluid">
-        </div>
-        <div class="col-md-6">
-          <h2 class="text-black">Product Title</h2>
-          <div class="my-3"><%- include('partials/ratings/one-star') %></div>
-          <p>Kapag sinuot mo ito ay kasama ka na sa sando gang, sando gang YEAH! kami ang Sando Gang!</p>
-
-          <div class="mb-5">
-            <div class="input-group mb-3" style="max-width: 120px;">
-            <div class="input-group-prepend">
-              <button class="btn btn-outline-primary js-btn-minus" type="button">&minus;</button>
+        <div class="row">
+            <div class="col-md-6">
+                <img src="assets/ariston/images/cloth_1.jpg" alt="Image" class="img-fluid">
             </div>
-            <input type="number" class="form-control text-center" value="1"  placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
-            <div class="input-group-append">
-              <button class="btn btn-outline-primary js-btn-plus" type="button">&plus;</button>
+            <div class="col-md-6">
+                <h2 class="text-black">Product Title</h2>
+                <div class="my-3">
+                    <%- include('partials/ratings/one-star') %>
+                </div>
+                <p>Kapag sinuot mo ito ay kasama ka na sa sando gang, sando gang YEAH! kami ang Sando Gang!</p>
+
+                <div class="mb-5">
+                    <div class="input-group mb-3" style="max-width: 120px;">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-outline-primary js-btn-minus" type="button">&minus;</button>
+                        </div>
+                        <input type="number" class="form-control text-center" value="1" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-primary js-btn-plus" type="button">&plus;</button>
+                        </div>
+                    </div>
+                </div>
+                <p><a href="/cart" class="buy-now btn btn-sm btn-primary">Add To Cart</a></p>
             </div>
-          </div>
-      
-          </div>
-
-          <p><a href="cart.html" class="buy-now btn btn-sm btn-primary">Add To Cart</a></p>
-
         </div>
-      </div>
+
+        <!-- Reviews and Ratings Section -->
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <h3 class="mb-5">Reviews</h3>
+
+                <!-- Display existing reviews -->
+                <div class="review mb-4">
+                    <h4>John Doe</h4>
+                    <div class="my-2">
+                        <%- include('partials/ratings/four-stars') %> <!-- Example star rating -->
+                    </div>
+                    <p>This product is amazing! Really comfortable to wear and perfect for the summer.</p>
+                </div>
+
+                <div class="review mb-4">
+                    <h4>Jane Smith</h4>
+                    <div class="my-2">
+                        <%- include('partials/ratings/three-stars') %> <!-- Example star rating -->
+                    </div>
+                    <p>Nice product, but I wish the size was more accurate.</p>
+                </div>
+
+                <!-- Review form -->
+                <div class="review-form">
+                    <h4>Leave a Review</h4>
+                    <form action="/submit-review" method="POST">
+                        <div class="form-group">
+                            <label for="rating" class="text-black">Your Rating</label>
+                            <select id="rating" name="rating" class="form-control">
+                                <option value="5">★★★★★ - Excellent</option>
+                                <option value="4">★★★★☆ - Very Good</option>
+                                <option value="3">★★★☆☆ - Average</option>
+                                <option value="2">★★☆☆☆ - Poor</option>
+                                <option value="1">★☆☆☆☆ - Terrible</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="review" class="text-black">Your Review</label>
+                            <textarea id="review" name="review" class="form-control" rows="4"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Submit Review</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+</div>
+
+
+  <%- include('partials/end') %>
