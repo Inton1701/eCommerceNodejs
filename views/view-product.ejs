@@ -1,3 +1,40 @@
 <%- include('partials/start') %>
 <%- include('partials/navbar') %>
 <%- include('partials/end') %>
+<style>
+     input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+</style>
+<div class="site-section">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <img src="assets/ariston/images/cloth_1.jpg" alt="Image" class="img-fluid">
+        </div>
+        <div class="col-md-6">
+          <h2 class="text-black">Product Title</h2>
+          <div class="my-3"><%- include('partials/ratings/one-star') %></div>
+          <p>Kapag sinuot mo ito ay kasama ka na sa sando gang, sando gang YEAH! kami ang Sando Gang!</p>
+
+          <div class="mb-5">
+            <div class="input-group mb-3" style="max-width: 120px;">
+            <div class="input-group-prepend">
+              <button class="btn btn-outline-primary js-btn-minus" type="button">&minus;</button>
+            </div>
+            <input type="number" class="form-control text-center" value="1"  placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
+            <div class="input-group-append">
+              <button class="btn btn-outline-primary js-btn-plus" type="button">&plus;</button>
+            </div>
+          </div>
+      
+          </div>
+
+          <p><a href="cart.html" class="buy-now btn btn-sm btn-primary">Add To Cart</a></p>
+
+        </div>
+      </div>
+    </div>
+  </div>
