@@ -58,17 +58,17 @@ module.exports = router;
 
 //Cael - where the admin_dashboard.ejs is supposed to be
 // Admin Routes
-router.get('/admin/dashboard', admin.isAdmin, admin.dashboard);
-router.get('/admin/products', admin.isAdmin, admin.products);
-router.get('/admin/orders', admin.isAdmin, admin.orders);
-router.get('/admin/users', admin.isAdmin, admin.users);
+router.get('/admin/dashboard',  admin.dashboard);
+router.get('/admin/products',  admin.products);
+router.get('/admin/orders', admin.orders);
+router.get('/admin/users', admin.users);
 
 // kay thien dapat
-router.post('/admin/products/add', admin.isAdmin, admin.addProduct);
-router.put('/admin/products/edit/:id', admin.isAdmin, admin.editProduct);
-router.delete('/admin/products/delete/:id', admin.isAdmin, admin.deleteProduct);
+router.post('/admin/products/add', admin.addProduct);
+router.put('/admin/products/edit/:id',  admin.editProduct);
+router.delete('/admin/products/delete/:id', admin.deleteProduct);
 
 // Admin Order Management
-router.put('/admin/orders/status/:id', admin.isAdmin, admin.updateOrderStatus);
+router.put('/admin/orders/status/:id', admin.updateOrderStatus);
 
 module.exports = router

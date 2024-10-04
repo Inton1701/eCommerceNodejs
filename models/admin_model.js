@@ -1,178 +1,162 @@
 const db = require('../config/database');
 
 const Admin = {
-    getUserById: async (userId) => {
-        try {
-            const [rows] = await db.query('SELECT * FROM users WHERE user_id = ?', [userId]);
-            return rows[0];
-        } catch (error) {
-            throw error;
-        }
+    getUserById: (userId, callback) => {
+        db.query('SELECT * FROM users WHERE user_id = ?', [userId], (error, results) => {
+            if (error) return callback(error);
+            callback(null, results[0]);
+        });
     },
 
-    getDashboardData: async () => {
-        try {
-            // Get total sales
-            const [salesResult] = await db.query('SELECT SUM(total_price) as total_sales FROM orders');
-            const totalSales = salesResult[0].total_sales || 0;
+    getDashboardData: (callback) => {
+        let totalSales = 0;
+        let totalOrders = 0;
+        let totalProducts = 0;
+        let totalUsers = 0;
+        db.query('SELECT SUM(total_price) as total_sales FROM orders', (error, salesResult) => {
+            if (error) return callback(error);
+             totalSales = salesResult[0].total_sales || 0;
 
-            // Get total orders
-            const [ordersResult] = await db.query('SELECT COUNT(*) as total_orders FROM orders');
-            const totalOrders = ordersResult[0].total_orders;
+            db.query('SELECT COUNT(*) as total_orders FROM orders', (error, ordersResult) => {
+                if (error) return callback(error);
+                 totalOrders = ordersResult[0].total_orders;
 
-            // Get total products
-            const [productsResult] = await db.query('SELECT COUNT(*) as total_products FROM products');
-            const totalProducts = productsResult[0].total_products;
+                db.query('SELECT COUNT(*) as total_products FROM products', (error, productsResult) => {
+                    if (error) return callback(error);
+                     totalProducts = productsResult[0].total_products;
 
-            // Get total users
-            const [usersResult] = await db.query('SELECT COUNT(*) as total_users FROM users WHERE role = "customer"');
-            const totalUsers = usersResult[0].total_users;
+                    db.query('SELECT COUNT(*) as total_users FROM users WHERE role = "customer"', (error, usersResult) => {
+                        if (error) return callback(error);
+                         totalUsers = usersResult[0].total_users;
 
-            return {
-                totalSales,
-                totalOrders,
-                totalProducts,
-                totalUsers
-            };
-        } catch (error) {
-            throw error;
-        }
+                        const dashboardData = {
+                            totalSales,
+                            totalOrders,
+                            totalProducts,
+                            totalUsers,
+                        };
+
+                        callback(null, dashboardData);
+                    });
+                });
+            });
+        });
     },
 
-    getRecentOrders: async () => {
-        try {
-            const [orders] = await db.query(`
-                SELECT o.*, u.first_name, u.last_name 
-                FROM orders o 
-                JOIN users u ON o.user_id = u.user_id 
-                ORDER BY o.created_at DESC 
-                LIMIT 10
-            `);
-            return orders;
-        } catch (error) {
-            throw error;
-        }
+    getRecentOrders: (callback) => {
+        db.query(`
+            SELECT o.*, u.first_name, u.last_name 
+            FROM orders o 
+            JOIN users u ON o.user_id = u.user_id 
+            ORDER BY o.created_at DESC 
+            LIMIT 10
+        `, (error, results) => {
+            if (error) return callback(error);
+            callback(null, results);
+        });
     },
 
-    getTopProducts: async () => {
-        try {
-            const [products] = await db.query(`
-                SELECT p.*, 
-                       COUNT(oi.product_id) as total_sold
-                FROM products p
-                LEFT JOIN ordered_items oi ON p.product_id = oi.product_id
-                GROUP BY p.product_id
-                ORDER BY total_sold DESC
-                LIMIT 5
-            `);
-            return products;
-        } catch (error) {
-            throw error;
-        }
+    getTopProducts: (callback) => {
+        db.query(`
+            SELECT p.*, COUNT(oi.product_id) as total_sold
+            FROM products p
+            LEFT JOIN ordered_items oi ON p.product_id = oi.product_id
+            GROUP BY p.product_id
+            ORDER BY total_sold DESC
+            LIMIT 5
+        `, (error, results) => {
+            if (error) return callback(error);
+            callback(null, results);
+        });
     },
 
-    getCategoryDistribution: async () => {
-        try {
-            const [categories] = await db.query(`
-                SELECT c.name,
-                       COUNT(p.product_id) as product_count,
-                       ROUND(COUNT(p.product_id) * 100.0 / (SELECT COUNT(*) FROM products), 1) as percentage
-                FROM categories c
-                LEFT JOIN products p ON c.category_id = p.category_id
-                GROUP BY c.category_id
-            `);
-            return categories;
-        } catch (error) {
-            throw error;
-        }
+    getCategoryDistribution: (callback) => {
+        db.query(`
+            SELECT c.name, COUNT(p.product_id) as product_count, 
+                   ROUND(COUNT(p.product_id) * 100.0 / (SELECT COUNT(*) FROM products), 1) as percentage
+            FROM categories c
+            LEFT JOIN products p ON c.category_id = p.category_id
+            GROUP BY c.category_id
+        `, (error, results) => {
+            if (error) return callback(error);
+            callback(null, results);
+        });
     },
 
-    getAllProducts: async () => {
-        try {
-            const [products] = await db.query(`
-                SELECT p.*, c.name as category_name 
-                FROM products p 
-                LEFT JOIN categories c ON p.category_id = c.category_id
-            `);
-            return products;
-        } catch (error) {
-            throw error;
-        }
+    getAllProducts: (callback) => {
+        db.query(`
+            SELECT p.*, c.name as category_name 
+            FROM products p 
+            LEFT JOIN categories c ON p.category_id = c.category_id
+        `, (error, results) => {
+            if (error) return callback(error);
+            callback(null, results);
+        });
     },
 
-    getAllCategories: async () => {
-        try {
-            const [categories] = await db.query('SELECT * FROM categories');
-            return categories;
-        } catch (error) {
-            throw error;
-        }
+    getAllCategories: (callback) => {
+        db.query('SELECT * FROM categories', (error, results) => {
+            if (error) return callback(error);
+            callback(null, results);
+        });
     },
 
-    addProduct: async (productData) => {
-        try {
-            const { name, description, price, quantity, category_id, image_path } = productData;
-            await db.query(`
-                INSERT INTO products (name, description, price, quantity, category_id, image_path)
-                VALUES (?, ?, ?, ?, ?, ?)
-            `, [name, description, price, quantity, category_id, image_path]);
-        } catch (error) {
-            throw error;
-        }
+    addProduct: (productData, callback) => {
+        const { name, description, price, quantity, category_id, image_path } = productData;
+        db.query(`
+            INSERT INTO products (name, description, price, quantity, category_id, image_path)
+            VALUES (?, ?, ?, ?, ?, ?)
+        `, [name, description, price, quantity, category_id, image_path], (error) => {
+            if (error) return callback(error);
+            callback(null);
+        });
     },
 
-    updateProduct: async (productId, productData) => {
-        try {
-            const { name, description, price, quantity, category_id, image_path } = productData;
-            await db.query(`
-                UPDATE products 
-                SET name = ?, description = ?, price = ?, quantity = ?, 
-                    category_id = ?, image_path = ?
-                WHERE product_id = ?
-            `, [name, description, price, quantity, category_id, image_path, productId]);
-        } catch (error) {
-            throw error;
-        }
+    updateProduct: (productId, productData, callback) => {
+        const { name, description, price, quantity, category_id, image_path } = productData;
+        db.query(`
+            UPDATE products 
+            SET name = ?, description = ?, price = ?, quantity = ?, 
+                category_id = ?, image_path = ?
+            WHERE product_id = ?
+        `, [name, description, price, quantity, category_id, image_path, productId], (error) => {
+            if (error) return callback(error);
+            callback(null);
+        });
     },
 
-    deleteProduct: async (productId) => {
-        try {
-            await db.query('DELETE FROM products WHERE product_id = ?', [productId]);
-        } catch (error) {
-            throw error;
-        }
+    deleteProduct: (productId, callback) => {
+        db.query('DELETE FROM products WHERE product_id = ?', [productId], (error) => {
+            if (error) return callback(error);
+            callback(null);
+        });
     },
 
-    getAllOrders: async () => {
-        try {
-            const [orders] = await db.query(`
-                SELECT o.*, u.first_name, u.last_name 
-                FROM orders o 
-                JOIN users u ON o.user_id = u.user_id 
-                ORDER BY o.created_at DESC
-            `);
-            return orders;
-        } catch (error) {
-            throw error;
-        }
+    getAllOrders: (callback) => {
+        db.query(`
+            SELECT o.*, u.first_name, u.last_name 
+            FROM orders o 
+            JOIN users u ON o.user_id = u.user_id 
+            ORDER BY o.created_at DESC
+        `, (error, results) => {
+            if (error) return callback(error);
+            callback(null, results);
+        });
     },
 
-    updateOrderStatus: async (orderId, status) => {
-        try {
-            await db.query('UPDATE orders SET status = ? WHERE order_id = ?', [status, orderId]);
-        } catch (error) {
-            throw error;
-        }
+    updateOrderStatus: (orderId, status, callback) => {
+        db.query('UPDATE orders SET status = ? WHERE order_id = ?', [status, orderId], (error) => {
+            if (error) return callback(error);
+            callback(null);
+        });
     },
 
-    getAllUsers: async () => {
-        try {
-            const [users] = await db.query('SELECT * FROM users WHERE role = "customer"');
-            return users;
-        } catch (error) {
-            throw error;
-        }
-    }
+    getAllUsers: (callback) => {
+        db.query('SELECT * FROM users WHERE role = "customer"', (error, results) => {
+            if (error) return callback(error);
+            callback(null, results);
+        });
+    },
 };
 
 module.exports = Admin;

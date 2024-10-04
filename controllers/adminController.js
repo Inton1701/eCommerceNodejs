@@ -1,49 +1,69 @@
 const Admin = require('../models/admin_model');
-
+//cael
 const adminController = {
-    // Middleware to check if user is admin
-    isAdmin: async (req, res, next) => {
-        if (!req.session.user_id) {
-            return res.redirect('/login');
-        }
-        try {
-            const user = await Admin.getUserById(req.session.user_id);
-            if (user && user.role === 'admin') {
-                next();
-            } else {
-                res.status(403).send('Access denied');
-            }
-        } catch (error) {
-            console.error('Error checking admin status:', error);
-            res.status(500).send('Server error');
-        }
-    },
+    // // Middleware to check if user is admin
+    // isAdmin:   (req, res, next) => {
+    //     if (!req.session.email) {
+    //         return res.redirect('/login');
+    //     }
+    //     try {
+    //         const user =   Admin.getUserById(req.session.email);
+    //         if (user && user.role === 'admin') {
+    //             next();
+    //         } else {
+    //             res.status(403).send('Access denied');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error checking admin status:', error);
+    //         res.status(500).send('Server error');
+    //     }
+    // },
 
     // Dashboard
-    dashboard: async (req, res) => {
-        try {
-            const dashboardData = await Admin.getDashboardData();
-            const recentOrders = await Admin.getRecentOrders();
-            const topProducts = await Admin.getTopProducts();
-            const categories = await Admin.getCategoryDistribution();
-
-            res.render('admin/dashboard', {
-                ...dashboardData,
-                recentOrders,
-                topProducts,
-                categories
+    dashboard:   (req, res) => {
+   
+            Admin.getDashboardData((error, dashboardData) => {
+                if (error) {
+                    console.error('Error loading dashboard:', error);
+                    return res.status(500).send('Error loading dashboard');
+                }
+    
+                Admin.getRecentOrders((error, recentOrders) => {
+                    if (error) {
+                        console.error('Error loading recent orders:', error);
+                        return res.status(500).send('Error loading recent orders');
+                    }
+    
+                    Admin.getTopProducts((error, topProducts) => {
+                        if (error) {
+                            console.error('Error loading top products:', error);
+                            return res.status(500).send('Error loading top products');
+                        }
+    
+                        Admin.getCategoryDistribution((error, categories) => {
+                            if (error) {
+                                console.error('Error loading category distribution:', error);
+                                return res.status(500).send('Error loading category distribution');
+                            }
+    
+                            res.render('admin/dashboard', {
+                                ...dashboardData,
+                                recentOrders,
+                                topProducts,
+                                categories
+                            });
+                        });
+                    });
+                });
             });
-        } catch (error) {
-            console.error('Error loading dashboard:', error);
-            res.status(500).send('Error loading dashboard');
-        }
+        
     },
 
     // Products Management
-    products: async (req, res) => {
+    products:   (req, res) => {
         try {
-            const products = await Admin.getAllProducts();
-            const categories = await Admin.getAllCategories();
+            const products =   Admin.getAllProducts();
+            const categories =   Admin.getAllCategories();
             res.render('admin/products', { products, categories });
         } catch (error) {
             console.error('Error loading products:', error);
@@ -51,10 +71,10 @@ const adminController = {
         }
     },
 
-    addProduct: async (req, res) => {
+    addProduct:   (req, res) => {
         try {
             const productData = req.body;
-            await Admin.addProduct(productData);
+              Admin.addProduct(productData);
             res.redirect('/admin/products');
         } catch (error) {
             console.error('Error adding product:', error);
@@ -62,11 +82,11 @@ const adminController = {
         }
     },
 
-    editProduct: async (req, res) => {
+    editProduct:   (req, res) => {
         try {
             const productId = req.params.id;
             const productData = req.body;
-            await Admin.updateProduct(productId, productData);
+              Admin.updateProduct(productId, productData);
             res.redirect('/admin/products');
         } catch (error) {
             console.error('Error updating product:', error);
@@ -74,10 +94,10 @@ const adminController = {
         }
     },
 
-    deleteProduct: async (req, res) => {
+    deleteProduct:   (req, res) => {
         try {
             const productId = req.params.id;
-            await Admin.deleteProduct(productId);
+              Admin.deleteProduct(productId);
             res.redirect('/admin/products');
         } catch (error) {
             console.error('Error deleting product:', error);
@@ -86,9 +106,9 @@ const adminController = {
     },
 
     // Orders Management
-    orders: async (req, res) => {
+    orders:   (req, res) => {
         try {
-            const orders = await Admin.getAllOrders();
+            const orders =   Admin.getAllOrders();
             res.render('admin/orders', { orders });
         } catch (error) {
             console.error('Error loading orders:', error);
@@ -96,11 +116,11 @@ const adminController = {
         }
     },
 
-    updateOrderStatus: async (req, res) => {
+    updateOrderStatus:   (req, res) => {
         try {
             const orderId = req.params.id;
             const { status } = req.body;
-            await Admin.updateOrderStatus(orderId, status);
+              Admin.updateOrderStatus(orderId, status);
             res.redirect('/admin/orders');
         } catch (error) {
             console.error('Error updating order status:', error);
@@ -109,9 +129,9 @@ const adminController = {
     },
 
     // Users Management
-    users: async (req, res) => {
+    users:   (req, res) => {
         try {
-            const users = await Admin.getAllUsers();
+            const users =   Admin.getAllUsers();
             res.render('admin/users', { users });
         } catch (error) {
             console.error('Error loading users:', error);
