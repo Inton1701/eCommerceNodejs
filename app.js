@@ -18,4 +18,5 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/bootstrap-icons', express.static(__dirname + '/node_modules/bootstrap-icons/font'));
 app.set('views', path.join(__dirname, 'views'));
 
+
 app.listen(3001)
