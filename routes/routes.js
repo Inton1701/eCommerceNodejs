@@ -4,6 +4,7 @@ const user = require('../controllers/user_controller');
 const order = require('../controllers/order_controller');
 const product = require('../controllers/product_controller');
 const cart = require('../controllers/cart_controller');
+const category = require('../controllers/category_controller');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -13,6 +14,7 @@ router.get('/', user.index);
 router.get('/login', user.login);
 router.get('/register', user.register);
 router.get('/home', user.home);
+router.get('/admin', user.admin);
 router.get('/shop', user.shop);
 router.post('/signup', user.signup);
 router.post('/authenticate', user.authenticate);
@@ -21,6 +23,8 @@ router.get('/logout', user.logout);
 router.get('/view-product', user.view_product);
 router.get('/cart', user.cart);
 router.get('/checkout', user.checkout);
+router.get('/admin/category', category.manage_category);
+
 
 //Thiena
 const storage = multer.diskStorage({
