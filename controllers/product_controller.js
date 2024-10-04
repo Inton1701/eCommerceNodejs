@@ -1,4 +1,19 @@
+const multer = require('multer');
+const path = require('path');
 const p = require('../models/product_model'); // Import the product model
+
+// Multer storage configuration
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+
+// Multer middleware
+const upload = multer({ storage: storage });
 
 const products = {
     // Save product
@@ -19,7 +34,7 @@ const products = {
             category_name: req.body.category_name 
         };
 
-        console.log("New product data:", newProduct); // Debug log
+        console.log("New product data:", newProduct);
 
         p.save(newProduct, (err) => {
             if (err) {
@@ -48,7 +63,7 @@ const products = {
             category_name: req.body.category_name
         };
 
-        console.log("Updated product data:", updatedData); // Debug log
+        console.log("Updated product data:", updatedData);
 
         p.update(productId, updatedData, (err) => {
             if (err) {
@@ -61,7 +76,7 @@ const products = {
 
     // Delete a product by its ID
     deleteProduct: (req, res) => {
-        const productId = req.params.id; // Assuming the ID comes from the route parameters
+        const productId = req.params.id;
 
         p.delete(productId, (err) => {
             if (err) {
@@ -71,7 +86,7 @@ const products = {
                 console.error(err);
                 return res.status(500).send('Error deleting product');
             }
-            res.redirect('/productsCrud'); // Redirect after successful deletion
+            res.redirect('/productsCrud');
         });
     },
 
@@ -82,9 +97,12 @@ const products = {
                 console.error(err);
                 return res.status(500).send('Error fetching products');
             }
-            res.render('products_crud', { products }); // Render your EJS view with products
+            res.render('products_crud', { products });
         });
     },
+
+    // Multer middleware export
+    upload,
 };
 
 module.exports = products;

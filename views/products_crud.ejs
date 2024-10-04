@@ -50,7 +50,6 @@
         <table class="table table-bordered mt-3">
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Name</th>
                     <th>Description</th>
                     <th>Price</th>
@@ -63,7 +62,6 @@
             <tbody>
                 <% products.forEach(product => { %>
                     <tr>
-                        <td><%= product.product_id %></td>
                         <td><%= product.product_name || 'N/A' %></td>
                         <td><%= product.description || 'N/A' %></td>
                         <td><%= product.price || 'N/A' %></td>
@@ -190,7 +188,6 @@
 
     <script>
         function editProduct(id, name, description, price, quantity, category_name) {
-            $('#updateProductId').val(id);
             $('#updateName').val(name);
             $('#updateDescription').val(description);
             $('#updatePrice').val(price);

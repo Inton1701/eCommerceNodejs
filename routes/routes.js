@@ -29,31 +29,10 @@ router.get('/admin/category', category.manage_category);
 
 
 //Thiena
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); 
-    }
-});
-
-const upload = multer({ storage: storage });
-
-router.post('/productsCrud', upload.single('image'), (req, res) => {
-    console.log(req.file); 
-    res.send('Product added successfully with image!');
-});
-
-
-router.get('/productsCrud', product.products); // Ensure product.products is defined
-router.post('/productsCrud', upload.single('image'), product.saveProduct); // Ensure product.saveProduct is defined
-router.post('/productsCrud/update', upload.single('image'), product.updateProduct); // Ensure product.updateProduct is defined
-router.get('/productsCrud/delete/:id', product.deleteProduct); 
-
-
-module.exports = router;
-
+router.get('/productsCrud', product.products); 
+router.post('/productsCrud', product.upload.single('image'), product.saveProduct); 
+router.post('/productsCrud/update', product.upload.single('image'), product.updateProduct); 
+router.get('/productsCrud/delete/:id', product.deleteProduct);
 
 
 //Cael - where the admin_dashboard.ejs is supposed to be
