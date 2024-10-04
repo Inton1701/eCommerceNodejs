@@ -48,23 +48,25 @@ const products = {
     // Update product
     updateProduct: (req, res) => {
         const productId = req.body.productId;
-        let imagePath = null;
-
+        let imagePath = req.body.currentImagePath; // Assuming this is the current image path
+    
+        // If a new image is uploaded, update the image path
         if (req.file) {
             imagePath = req.file.filename;
         }
-
+    
         const updatedData = {
             name: req.body.name,
             description: req.body.description,
             price: req.body.price,
             quantity: req.body.quantity,
-            image_path: imagePath,
+            image_path: imagePath,  // Use the updated or existing image path
             category_name: req.body.category_name
         };
-
+    
         console.log("Updated product data:", updatedData);
-
+    
+        // Update product in the database
         p.update(productId, updatedData, (err) => {
             if (err) {
                 console.error(err);
@@ -73,6 +75,7 @@ const products = {
             res.redirect('/productsCrud');
         });
     },
+    
 
     // Delete a product by its ID
     deleteProduct: (req, res) => {

@@ -6,7 +6,6 @@ const product = require('../controllers/product_controller');
 const cart = require('../controllers/cart_controller');
 const category = require('../controllers/category_controller');
 const multer = require('multer');
-const path = require('path');
 const fs = require('fs');
 const admin = require('../controllers/adminController'); // Adjust path as needed
 

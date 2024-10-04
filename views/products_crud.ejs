@@ -147,7 +147,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <input type="hidden" name="productId" id="updateProductId">
+                        <input type="hidden" name="productId" id="updateProductId" >
                         <div class="form-group">
                             <label for="updateName">Product Name</label>
                             <input type="text" class="form-control" name="name" id="updateName" required>
@@ -188,6 +188,7 @@
 
     <script>
         function editProduct(id, name, description, price, quantity, category_name) {
+            $('#updateProductId').val(id);
             $('#updateName').val(name);
             $('#updateDescription').val(description);
             $('#updatePrice').val(price);
