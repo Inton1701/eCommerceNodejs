@@ -16,13 +16,13 @@ const user = {
         const query = `select * from users where email=?`;
         db.query(query, [email], (err, result) => {
             if (err) {
-              return callback(err, null);  // Pass error back to controller
+              return callback(err, null);  
             }
         
             if (result.length > 0) {
-              return callback(null, result[0]);  // Pass user data (first row) back to controller
+              return callback(null, result[0]);  
             } else {
-              return callback(null, null);  // No user found, return null
+              return callback(null, null); 
         }    })
     },
 
