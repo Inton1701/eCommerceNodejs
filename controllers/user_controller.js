@@ -43,7 +43,7 @@ const users = {
       // Hash the password using bcrypt
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      // Prepare user data with the hashed password
+      // Pass the data to the user_data array
       const user_data = {
         first_name,
         last_name,
@@ -54,7 +54,7 @@ const users = {
 
       console.log(user_data);
 
-      //   Save user data to the database (uncomment when needed)
+      //   Save user data to the table of users
       user.create_user(user_data, (err) => {
         if (err) throw err;
         res.redirect('/login');
@@ -68,46 +68,47 @@ const users = {
   ,
   authenticate: async (req, res) => {
     const { email, password } = req.body;
+    // Temporary admin credentials only for testing purposes lang ba 
     const admin_email = 'admin@nodejs.com';
     const admin_password = 'admin';
 
-    // Fetch user credentials from the database
+    // get user credentials from the database
     user.get_user_credentials(email, async (err, is_found) => {
       if (err) {
         console.log('Error fetching user credentials:', err);
         return res.redirect('/login');
       }
 
-      // Admin login check
+      // Check if the user role is admin
       if (email === admin_email) {
         if (password === admin_password) {
           req.session.email = email;
           req.session.role = 'admin';
-          return res.redirect('/admin'); // Ensure return after redirect
+          return res.redirect('/admin/dashboard'); 
         } else {
           console.log('Invalid admin password');
           return res.redirect('/login');
         }
       }
 
-      // Non-admin user check
+      // Else check if the user role is customer
      else if (!is_found) {
         console.log('User not found');
         return res.redirect('/login');
       }
 
       try {
-        // Verify the password using bcryptjs
+        // Verify the password 
         const match = await bcrypt.compare(password, is_found.password);
 
         if (match) {
           // If password matches, set the session and redirect to home
           req.session.email = email;
           req.session.role = is_found.role;
-          return res.redirect('/home'); // Ensure return after redirect
+          return res.redirect('/home'); 
         } else {
           console.log('Invalid password');
-          return res.redirect('/login'); // Ensure return after redirect
+          return res.redirect('/login'); 
         }
       } catch (error) {
         console.log('Error verifying password:', error);
@@ -115,23 +116,23 @@ const users = {
       }
     });
 },
-
+  // Go to shop
   shop: (req, res) => {
     if (req.session.email && req.session.role === 'customer') {
       res.render('shop', { email: req.session.email, role: req.session.role });
     } else {
-      res.redirect('/login');  // Redirect to login if session is not present
+      res.redirect('/login');  
     }
   },
-
+  // Go to home
   home: (req, res) => {
     if (req.session.email && req.session.role === 'customer') {
       res.render('home', { email: req.session.email });
     } else {
-      res.redirect('/login');  // Redirect to login if session is not present
+      res.redirect('/login'); 
     }
   },
-
+  // Go to login page and destroy session
   logout: (req, res) => {
     req.session.destroy((err) => {
       if (err) {
@@ -140,7 +141,7 @@ const users = {
       res.redirect('/login');
     });
   },
-
+  // Go to selected product
   view_product: (req, res) => {
     if (req.session.email && req.session.role === 'customer') {
       res.render('view-product', { email: req.session.email, role: req.session.role });
@@ -148,7 +149,7 @@ const users = {
       res.redirect('/login'); nt
     }
   },
-
+  // Go to product
   cart: (req, res) => {
     if (req.session.email && req.session.role === 'customer') {
       res.render('cart', { email: req.session.email, role: req.session.role });

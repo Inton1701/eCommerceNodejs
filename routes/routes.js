@@ -45,11 +45,11 @@ router.post('/productsCrud', upload.single('image'), (req, res) => {
     res.send('Product added successfully with image!');
 });
 
-
-router.get('/productsCrud', product.products); // Ensure product.products is defined
-router.post('/productsCrud', upload.single('image'), product.saveProduct); // Ensure product.saveProduct is defined
-router.post('/productsCrud/update', upload.single('image'), product.updateProduct); // Ensure product.updateProduct is defined
-router.get('/productsCrud/delete/:id', product.deleteProduct); 
+router.get('/admin/dashboard',  admin.dashboard);
+router.get('/admin/products', product.products); // Ensure product.products is defined
+router.post('/admin/products/add', upload.single('image'), product.saveProduct); // Ensure product.saveProduct is defined
+router.post('/admin/products/update', upload.single('image'), product.updateProduct); // Ensure product.updateProduct is defined
+router.get('/admin/products/delete/:id', product.deleteProduct); 
 
 
 module.exports = router;
@@ -58,15 +58,15 @@ module.exports = router;
 
 //Cael - where the admin_dashboard.ejs is supposed to be
 // Admin Routes
-router.get('/admin/dashboard',  admin.dashboard);
-router.get('/admin/products',  admin.products);
-router.get('/admin/orders', admin.orders);
-router.get('/admin/users', admin.users);
+// router.get('/admin/dashboard',  admin.dashboard);
+// router.get('/admin/products',  admin.products);
+// router.get('/admin/orders', admin.orders);
+// router.get('/admin/users', admin.users);
 
-// kay thien dapat
-router.post('/admin/products/add', admin.addProduct);
-router.put('/admin/products/edit/:id',  admin.editProduct);
-router.delete('/admin/products/delete/:id', admin.deleteProduct);
+// // kay thien dapat
+// router.post('/admin/products/add', admin.addProduct);
+// router.put('/admin/products/edit/:id',  admin.editProduct);
+// router.delete('/admin/products/delete/:id', admin.deleteProduct);
 
 // Admin Order Management
 router.put('/admin/orders/status/:id', admin.updateOrderStatus);

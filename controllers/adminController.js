@@ -1,25 +1,6 @@
 const Admin = require('../models/admin_model');
 //cael
 const adminController = {
-    // // Middleware to check if user is admin
-    // isAdmin:   (req, res, next) => {
-    //     if (!req.session.email) {
-    //         return res.redirect('/login');
-    //     }
-    //     try {
-    //         const user =   Admin.getUserById(req.session.email);
-    //         if (user && user.role === 'admin') {
-    //             next();
-    //         } else {
-    //             res.status(403).send('Access denied');
-    //         }
-    //     } catch (error) {
-    //         console.error('Error checking admin status:', error);
-    //         res.status(500).send('Server error');
-    //     }
-    // },
-
-    // Dashboard
     dashboard:   (req, res) => {
    
             Admin.getDashboardData((error, dashboardData) => {
@@ -46,7 +27,7 @@ const adminController = {
                                 return res.status(500).send('Error loading category distribution');
                             }
     
-                            res.render('admin/dashboard', {
+                            res.render('admin-dashboard', {
                                 ...dashboardData,
                                 recentOrders,
                                 topProducts,

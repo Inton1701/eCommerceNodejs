@@ -1,5 +1,5 @@
 const p = require('../models/product_model'); // Import the product model
-
+const categories = require('../models/category_model'); // Import the category model
 const products = {
     // Save product
     saveProduct: (req, res) => {
@@ -7,16 +7,14 @@ const products = {
         if (req.file) {
             imagePath = req.file.filename;
         }
-
+      
         const newProduct = {
             name: req.body.name,
             description: req.body.description,
             price: req.body.price,
             quantity: req.body.quantity,
-            solds: 0,
-            returns: 0,
             image_path: imagePath,
-            category_name: req.body.category_name 
+            category_id: req.body.category_id 
         };
 
         console.log("New product data:", newProduct); // Debug log
@@ -26,7 +24,7 @@ const products = {
                 console.error(err);
                 return res.status(500).send('Error saving product');
             }
-            res.redirect('/productsCrud');
+            res.redirect('/admin/products');
         });
     },
 
@@ -45,7 +43,7 @@ const products = {
             price: req.body.price,
             quantity: req.body.quantity,
             image_path: imagePath,
-            category_name: req.body.category_name
+            category_id: req.body.category_id
         };
 
         console.log("Updated product data:", updatedData); // Debug log
@@ -55,7 +53,7 @@ const products = {
                 console.error(err);
                 return res.status(500).send('Error updating product');
             }
-            res.redirect('/productsCrud');
+            res.redirect('/admin/products');
         });
     },
 
@@ -71,7 +69,7 @@ const products = {
                 console.error(err);
                 return res.status(500).send('Error deleting product');
             }
-            res.redirect('/productsCrud'); // Redirect after successful deletion
+            res.redirect('/admin/products'); // Redirect after successful deletion
         });
     },
 
@@ -82,7 +80,14 @@ const products = {
                 console.error(err);
                 return res.status(500).send('Error fetching products');
             }
-            res.render('products_crud', { products }); // Render your EJS view with products
+            categories.getAll((err, categ) => {
+                if (err) {
+                    console.error(err);
+                    return res.status(500).send('Error fetching categories');
+                }
+                res.render('admin-product', { products, categ }); // Render your EJS view with products and categories
+            })
+  
         });
     },
 };

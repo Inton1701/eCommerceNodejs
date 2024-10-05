@@ -1,0 +1,203 @@
+<%- include('partials/admin-start') %>
+    <%- include('partials/admin-navbar') %>
+        <%- include('partials/admin-sidebar') %>
+            <body class="bg-gray-100">
+                <div class="p-4 sm:ml-64 pt-20 mt-5">
+                    <div class="container mt-5">   
+                                <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#addProductModal">AddProduct</button>
+                        </div>
+
+                        <table class="table table-bordered mt-3 display" id="myTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Category</th>
+                                    <th>Image</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% products.forEach(product=> { %>
+                                    <tr>
+                                        <td>
+                                            <%= product.product_id %>
+                                        </td>
+                                        <td>
+                                            <%= product.name || 'N/A' %>
+                                        </td>
+                                        <td>
+                                            <%= product.description || 'N/A' %>
+                                        </td>
+                                        <td>
+                                            <%= product.price || 'N/A' %>
+                                        </td>
+                                        <td>
+                                            <%= product.quantity || 'N/A' %>
+                                        </td>
+                                        <td>
+                                            <%= product.category_name || 'N/A' %>
+                                        </td>
+                                        <td>
+                                            <% if (product.image_path) { %>
+                                                <img src="/uploads/<%= product.image_path %>"
+                                                    alt="<%= product.product_name %>"
+                                                    style="width: 50px; height: 50px;">
+                                                <% } else { %>
+                                                    No Image
+                                                    <% } %>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-warning"
+                                                onclick="editProduct(<%= product.product_id %>, '<%= product.name %>', '<%= product.description %>', <%= product.price %>, <%= product.quantity %>, '<%= product.category_name %>')">Edit</button>
+                                            <a href="/admin/products/de/<%= product.product_id %>"
+                                                class="btn btn-danger"
+                                                onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </body>
+                <!-- Add Product Modal -->
+                <div class="modal fade" id="addProductModal" tabindex="-1" role="dialog"
+                    aria-labelledby="addProductModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <form id="addProductForm" action="/admin/products/add" method="POST"
+                                enctype="multipart/form-data">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="addProductModalLabel">Add Product</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="name">Product Name</label>
+                                        <input type="text" class="form-control" name="name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="description">Description</label>
+                                        <textarea class="form-control" name="description" required></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="price">Price</label>
+                                        <input type="number" class="form-control" name="price" required step="0.01">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="quantity">Quantity</label>
+                                        <input type="number" class="form-control" name="quantity" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="category">Category</label>
+                                        <select name="category_id" class="form-control">
+                                            <% categ.forEach(category=> { %>
+                                                <option value="<%= category.category_id %>">
+                                                    <%= category.name %>
+                                                </option>
+                                                <% }) %>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="image">Image</label>
+                                        <input type="file" class="form-control-file" name="image">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Add Product</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+           
+                <!-- Update Product Modal -->
+                <div class="modal fade" id="updateProductModal" tabindex="-1" role="dialog"
+                    aria-labelledby="updateProductModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <form id="updateProductForm" action="/productsCrud/update" method="POST"
+                                enctype="multipart/form-data">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="updateProductModalLabel">Update Product</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="hidden" name="productId" id="updateProductId">
+                                    <div class="form-group">
+                                        <label for="updateName">Product Name</label>
+                                        <input type="text" class="form-control" name="name" id="updateName" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="updateDescription">Description</label>
+                                        <textarea class="form-control" name="description" id="updateDescription"
+                                            required></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="updatePrice">Price</label>
+                                        <input type="number" class="form-control" name="price" id="updatePrice" required
+                                            step="0.01">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="updateQuantity">Quantity</label>
+                                        <input type="number" class="form-control" name="quantity" id="updateQuantity"
+                                            required>
+                                    </div>
+                                    <div class="form-group">
+
+                                        <label for="updateCategory">Category</label>
+                                        <select name="category_id" class="form-control" id="updateCategory">
+
+                                            <% categ.forEach(category=> { %>
+                                                <option value="<%= category.category_id %>">
+                                                    <%= category.name %>
+                                                </option>
+                                                <% }) %>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="updateImage">Image</label>
+                                        <input type="file" class="form-control-file" name="image">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Update Product</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    function editProduct(id, name, description, price, quantity, category_id, image_path) {
+                        $('#updateProductId').val(id);
+                        $('#updateName').val(name);
+                        $('#updateDescription').val(description);
+                        $('#updatePrice').val(price);
+                        $('#updateQuantity').val(quantity);
+                        $('#updateCategory').val(category_id);
+                        $('#updateImagePath').val(image_path);
+                        $('#updateProductModal').modal('show');
+                    }
+                    $(document).ready(function() {
+        $('#myTable').DataTable({
+            // Add any custom configurations here
+            "paging": true,          // Enable pagination
+            "searching": true,       // Enable search filter
+            "ordering": true,        // Enable column sorting
+            "lengthMenu": [10, 25, 50, 100], // Set page length options
+            "pageLength": 10         // Set default page length
+        });
+    });
+                </script>
