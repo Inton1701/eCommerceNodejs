@@ -1,6 +1,7 @@
 <%- include('partials/admin-start') %>
     <%- include('partials/admin-navbar') %>
         <%- include('partials/admin-sidebar') %>
+
             <body class="bg-gray-100">
                 <div class="p-4 sm:ml-64 pt-20 mt-5">
                     <div class="container mt-5">   
@@ -119,20 +120,23 @@
                     </div>
                 </div>
            
+            
                 <!-- Update Product Modal -->
                 <div class="modal fade" id="updateProductModal" tabindex="-1" role="dialog"
                     aria-labelledby="updateProductModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                            <form id="updateProductForm" action="/productsCrud/update" method="POST"
-                                enctype="multipart/form-data">
+                           
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="updateProductModalLabel">Update Product</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
+                                    </button>
                                 </div>
                                 <div class="modal-body">
+                                    <form id="updateProductForm" action="/admin/products/update" method="POST"
+                                    enctype="multipart/form-data">
                                     <input type="hidden" name="productId" id="updateProductId">
                                     <div class="form-group">
                                         <label for="updateName">Product Name</label>
@@ -172,6 +176,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
                                     <button type="submit" class="btn btn-primary">Update Product</button>
                                 </div>
                             </form>
@@ -192,12 +197,12 @@
                     }
                     $(document).ready(function() {
         $('#myTable').DataTable({
-            // Add any custom configurations here
-            "paging": true,          // Enable pagination
-            "searching": true,       // Enable search filter
-            "ordering": true,        // Enable column sorting
-            "lengthMenu": [10, 25, 50, 100], // Set page length options
-            "pageLength": 10         // Set default page length
+            "paging": true,         
+            "searching": true,     
+            "ordering": true,       
+            "lengthMenu": [10, 25, 50, 100],
+            "pageLength": 10         
         });
     });
                 </script>
+   

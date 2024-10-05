@@ -161,6 +161,16 @@ const Admin = {
                     callback(null, results);
                 });
     },
+    updateUsers: (user_id, updateData, callback) => {
+        const query = ` UPDATE users SET first_name = ?, last_name = ?, email = ?, birthdate = ? WHERE user_id = ?`;
+        db.query(query, [updateData.first_name, updateData.last_name, updateData.email, updateData.birthdate, user_id], callback);
+    },
+    deleteUsers: (user_id, callback) => {
+        db.query('DELETE FROM users WHERE user_id = ?', [user_id], (error) => {
+            if (error) return callback(error);
+            callback(null);
+        });
+    },
 };
 
 module.exports = Admin;

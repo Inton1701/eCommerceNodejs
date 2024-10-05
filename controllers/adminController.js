@@ -52,39 +52,7 @@ const adminController = {
         }
     },
 
-    addProduct:   (req, res) => {
-        try {
-            const productData = req.body;
-              Admin.addProduct(productData);
-            res.redirect('/admin/products');
-        } catch (error) {
-            console.error('Error adding product:', error);
-            res.status(500).send('Error adding product');
-        }
-    },
-
-    editProduct:   (req, res) => {
-        try {
-            const productId = req.params.id;
-            const productData = req.body;
-              Admin.updateProduct(productId, productData);
-            res.redirect('/admin/products');
-        } catch (error) {
-            console.error('Error updating product:', error);
-            res.status(500).send('Error updating product');
-        }
-    },
-
-    deleteProduct:   (req, res) => {
-        try {
-            const productId = req.params.id;
-              Admin.deleteProduct(productId);
-            res.redirect('/admin/products');
-        } catch (error) {
-            console.error('Error deleting product:', error);
-            res.status(500).send('Error deleting product');
-        }
-    },
+    
 
     // Orders Management
     orders:   (req, res) => {
@@ -131,11 +99,44 @@ const adminController = {
 
             res.render('admin-users', { users: formattedUsers });
         }
-    )
-     
-     
-        
-    }
+    )   
+    },
+    update_user: (req, res) => {
+        const user_id = req.body.user_id;
+
+        const updatedData = {
+            user_id: user_id,
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            email: req.body.email,
+            birthdate: req.body.birthdate
+        };
+    
+        console.log("Updated product data:", updatedData);
+    
+        // Update product in the database
+        Admin.updateUsers(user_id, updatedData, (err) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send('Error updating product');
+            }
+            res.redirect('/admin/users');
+        });
+    },
+    delete_user: (req, res) => {
+        const user_id = req.params.user_id;
+    
+        Admin.deleteUsers(user_id, (err) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send('Error deleting product');
+            }
+            res.redirect('/admin/users');
+    }) }
+    
+
+  
+
 
 };
 

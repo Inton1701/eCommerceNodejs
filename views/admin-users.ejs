@@ -1,136 +1,116 @@
 <%- include('partials/admin-start') %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users</title>
+</head>
+<body class="bg-gray-100">
     <%- include('partials/admin-navbar') %>
-        <%- include('partials/admin-sidebar') %>
-            <body class="bg-gray-100">
-                <div class="p-4 sm:ml-64 pt-20 mt-5">
-                    <div class="container mt-5">   
-                                <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#addProductModal">AddProduct</button>
-                        </div>
+    <%- include('partials/admin-sidebar') %>
+    <div class="p-4 sm:ml-64 pt-20 mt-5">
 
-                        <table class="table table-bordered mt-3 display" id="myTable">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Firstname</th>
-                                    <th>Lastname</th>
-                                    <th>email</th>
-                                    <th>birthdate</th>
-                                    <th>role</th>
-                          
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% users.forEach(user=> { %>
-                                    <tr>
-                                        <td>
-                                            <%= user.user_id %>
-                                        </td>
-                                        <td>
-                                            <%= user.first_name || 'N/A' %>
-                                        </td>
-                                        <td>
-                                            <%= user.last_name || 'N/A' %>
-                                        </td>
-                                        <td>
-                                            <%= user.email || 'N/A' %>
-                                        </td>
-                                        <td>
-                                            <%= user.formattedBirthdate  || 'N/A' %>
-                                        </td>
-                                        <td>
-                                            <%= user.role || 'N/A' %>
-                                        </td>
-                                        
-                                        
-                                        <td>
-                                            <button class="btn btn-warning"
-                                                onclick="editProduct(<%= user.user_id %>, '<%= user.first_name %>', '<%= user.last_name %>', <%= user.email %>, <%= user.formattedUsers %>, '<%= user.role %>')">Edit</button>
-                                            <a href="/admin/user/delete/<%= user.user_id %>"
-                                                class="btn btn-danger"
-                                                onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
-                                        </td>
-                                    </tr>
-                                    <% }) %>
-                            </tbody>
-                        </table>
 
+        <table class="table table-bordered mt-3 display" id="myTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Firstname</th>
+                    <th>Lastname</th>
+                    <th>Email</th>
+                    <th>Birthdate</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% users.forEach(user => { %>
+                    <tr>
+                        <td><%= user.user_id %></td>
+                        <td><%= user.first_name || 'N/A' %></td>
+                        <td><%= user.last_name || 'N/A' %></td>
+                        <td><%= user.email || 'N/A' %></td>
+                        <td><%= user.formattedBirthdate || 'N/A' %></td>
+                        <td><%= user.role || 'N/A' %></td>
+                        <td>
+                            <button class="btn btn-warning"
+                                onclick="editUser(<%= user.user_id %>, '<%= user.first_name %>', '<%= user.last_name %>', '<%= user.email %>', '<%= user.formattedBirthdate %>', '<%= user.role %>')" >Edit</button>
+                            <a href="/admin/users/delete/<%= user.user_id %>" class="btn btn-danger"
+                                onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+        
+
+    </div>
+    </div>
+
+
+<div class="modal fade" id="updateUserModal" tabindex="-1" role="dialog" aria-labelledby="updateUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="updateUserForm" action="/admin/users/update" method="POST">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateUserModalLabel">Update User</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="user_id" id="user_id">
+                    <div class="form-group">
+                        <label for="first_name">First Name</label>
+                        <input type="text" class="form-control" name="first_name" id="first_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last Name</label>
+                        <input type="text" class="form-control" name="last_name" id="last_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" name="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="birthdate">Birthdate</label>
+                        <input type="date" class="form-control" name="birthdate" id="birthdate" required>
                     </div>
                 </div>
-            </body>
-               
-           
-                <!-- Update Product Modal -->
-                <div class="modal fade" id="updateProductModal" tabindex="-1" role="dialog"
-                    aria-labelledby="updateProductModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <form id="updateProductForm" action="/productsCrud/update" method="POST"
-                                enctype="multipart/form-data">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="updateProductModalLabel">Update Product</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <input type="hidden" name="productId" id="updateProductId">
-                                    <div class="form-group">
-                                        <label for="updateName">Product Name</label>
-                                        <input type="text" class="form-control" name="name" id="updateName" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="updateDescription">Description</label>
-                                        <textarea class="form-control" name="description" id="updateDescription"
-                                            required></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="updatePrice">Price</label>
-                                        <input type="number" class="form-control" name="price" id="updatePrice" required
-                                            step="0.01">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="updateQuantity">Quantity</label>
-                                        <input type="number" class="form-control" name="quantity" id="updateQuantity"
-                                            required>
-                                    </div>
-                                    <div class="form-group">
-
-                                       
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="updateImage">Image</label>
-                                        <input type="file" class="form-control-file" name="image">
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Update Product</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Update User</button>
                 </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
 
-                <script>
-                    function editProduct(id, name, description, price, quantity, category_id, image_path) {
-                        $('#updateProductId').val(id);
-                        $('#updateName').val(name);
-                        $('#updateDescription').val(description);
-                        $('#updatePrice').val(price);
-                        $('#updateQuantity').val(quantity);
-                        $('#updateCategory').val(category_id);
-                        $('#updateImagePath').val(image_path);
-                        $('#updateProductModal').modal('show');
-                    }
-                    $(document).ready(function() {
+<script>
+    $(document).ready(function () {
         $('#myTable').DataTable({
-            // Add any custom configurations here
-            "paging": true,          // Enable pagination
-            "searching": true,       // Enable search filter
-            "ordering": true,        // Enable column sorting
-            "lengthMenu": [10, 25, 50, 100], // Set page length options
-            "pageLength": 10         // Set default page length
+            paging: true,
+            searching: true,
+            ordering: true,
+            lengthMenu: [10, 25, 50, 100],
+            pageLength: 10
         });
     });
-                </script>
+
+    function editUser(user_id, first_name, last_name, email, birthdate) {
+        $('#user_id').val(user_id);
+        $('#first_name').val(first_name);
+        $('#last_name').val(last_name);
+        $('#email').val(email);
+        $('#birthdate').val(birthdate);
+        $('#updateUserModal').modal('show');
+    }
+</script>
+           
+</html>
+
+           
+          

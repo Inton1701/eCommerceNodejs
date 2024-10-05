@@ -55,8 +55,8 @@ router.get('/admin/products/delete/:id', product.deleteProduct);
 
 router.get('/admin/users', admin.users);
 
-
-
+router.post('/admin/users/update', admin.update_user);
+router.get('/admin/users/delete/:user_id', admin.delete_user);
 
 //Cael 
 
