@@ -29,6 +29,17 @@ router.get('/checkout', user.checkout);
 router.get('/admin/category', category.manage_category);
 
 
+
+
+router.get('/admin/users', admin.users);
+
+router.post('/admin/users/update', admin.update_user);
+router.get('/admin/users/delete/:user_id', admin.delete_user);
+
+router.get('/admin/orders', admin.order);
+router.post('/admin/orders/update', admin.update_order);
+router.get('/admin/orders/delete/:order_id', admin.delete_orders); 
+
 //Thiena
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -46,17 +57,12 @@ router.post('/productsCrud', upload.single('image'), (req, res) => {
     res.send('Product added successfully with image!');
 });
 
+
 router.get('/admin/dashboard',  admin.dashboard);
 router.get('/admin/products', product.products); // Ensure product.products is defined
 router.post('/admin/products/add', upload.single('image'), product.saveProduct); // Ensure product.saveProduct is defined
 router.post('/admin/products/update', upload.single('image'), product.updateProduct); // Ensure product.updateProduct is defined
 router.get('/admin/products/delete/:id', product.deleteProduct); 
-
-
-router.get('/admin/users', admin.users);
-
-router.post('/admin/users/update', admin.update_user);
-router.get('/admin/users/delete/:user_id', admin.delete_user);
 
 //Cael 
 
@@ -64,7 +70,6 @@ router.get('/shop', productController.getShopPage);
 // Admin Routes
 // router.get('/admin/dashboard',  admin.dashboard);
 // router.get('/admin/products',  admin.products);
-// router.get('/admin/orders', admin.orders);
 
 
 // // kay thien dapat
@@ -73,6 +78,5 @@ router.get('/shop', productController.getShopPage);
 // router.delete('/admin/products/delete/:id', admin.deleteProduct);
 
 // Admin Order Management
-router.put('/admin/orders/status/:id', admin.updateOrderStatus);
 
 module.exports = router

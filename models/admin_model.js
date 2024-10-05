@@ -83,16 +83,7 @@ const Admin = {
         });
     },
 
-    getAllProducts: (callback) => {
-        db.query(`
-            SELECT p.*, c.name as category_name 
-            FROM products p 
-            LEFT JOIN categories c ON p.category_id = c.category_id
-        `, (error, results) => {
-            if (error) return callback(error);
-            callback(null, results);
-        });
-    },
+
 
     getAllCategories: (callback) => {
         db.query('SELECT * FROM categories', (error, results) => {
@@ -125,27 +116,31 @@ const Admin = {
         });
     },
 
-    deleteProduct: (productId, callback) => {
+    deleteProduct : (productId, callback) => {
         db.query('DELETE FROM products WHERE product_id = ?', [productId], (error) => {
             if (error) return callback(error);
             callback(null);
         });
     },
 
+
     getAllOrders: (callback) => {
-        db.query(`
-            SELECT o.*, u.first_name, u.last_name 
-            FROM orders o 
-            JOIN users u ON o.user_id = u.user_id 
-            ORDER BY o.created_at DESC
-        `, (error, results) => {
-            if (error) return callback(error);
+        const query = 'SELECT * FROM `orders` ORDER BY order_id DESC'
+        db.query(query, (err, results) => {
+            if (err) {
+                console.error("Error fetching users", err); 
+                return callback(err);
+            }
             callback(null, results);
         });
     },
 
-    updateOrderStatus: (orderId, status, callback) => {
-        db.query('UPDATE orders SET status = ? WHERE order_id = ?', [status, orderId], (error) => {
+    updateOrderStatus: (orderData, callback) => {
+        const query = `UPDATE orders SET status = ? WHERE order_id = ?`;
+        db.query(query, [orderData.status, orderData.orderId], callback)
+    },
+    deleteOrders: (orderId, callback) => {
+        db.query('DELETE FROM orders WHERE order_id = ?', [orderId], (error) => {
             if (error) return callback(error);
             callback(null);
         });
@@ -162,7 +157,7 @@ const Admin = {
                 });
     },
     updateUsers: (user_id, updateData, callback) => {
-        const query = ` UPDATE users SET first_name = ?, last_name = ?, email = ?, birthdate = ? WHERE user_id = ?`;
+        const query = `UPDATE users SET first_name = ?, last_name = ?, email = ?, birthdate = ? WHERE user_id = ?`;
         db.query(query, [updateData.first_name, updateData.last_name, updateData.email, updateData.birthdate, user_id], callback);
     },
     deleteUsers: (user_id, callback) => {
@@ -171,6 +166,7 @@ const Admin = {
             callback(null);
         });
     },
+
 };
 
 module.exports = Admin;

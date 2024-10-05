@@ -1,50 +1,50 @@
 const Admin = require('../models/admin_model');
 //cael
 const adminController = {
-    dashboard:   (req, res) => {
-   
-            Admin.getDashboardData((error, dashboardData) => {
+    dashboard: (req, res) => {
+
+        Admin.getDashboardData((error, dashboardData) => {
+            if (error) {
+                console.error('Error loading dashboard:', error);
+                return res.status(500).send('Error loading dashboard');
+            }
+
+            Admin.getRecentOrders((error, recentOrders) => {
                 if (error) {
-                    console.error('Error loading dashboard:', error);
-                    return res.status(500).send('Error loading dashboard');
+                    console.error('Error loading recent orders:', error);
+                    return res.status(500).send('Error loading recent orders');
                 }
-    
-                Admin.getRecentOrders((error, recentOrders) => {
+
+                Admin.getTopProducts((error, topProducts) => {
                     if (error) {
-                        console.error('Error loading recent orders:', error);
-                        return res.status(500).send('Error loading recent orders');
+                        console.error('Error loading top products:', error);
+                        return res.status(500).send('Error loading top products');
                     }
-    
-                    Admin.getTopProducts((error, topProducts) => {
+
+                    Admin.getCategoryDistribution((error, categories) => {
                         if (error) {
-                            console.error('Error loading top products:', error);
-                            return res.status(500).send('Error loading top products');
+                            console.error('Error loading category distribution:', error);
+                            return res.status(500).send('Error loading category distribution');
                         }
-    
-                        Admin.getCategoryDistribution((error, categories) => {
-                            if (error) {
-                                console.error('Error loading category distribution:', error);
-                                return res.status(500).send('Error loading category distribution');
-                            }
-    
-                            res.render('admin-dashboard', {
-                                ...dashboardData,
-                                recentOrders,
-                                topProducts,
-                                categories
-                            });
+
+                        res.render('admin-dashboard', {
+                            ...dashboardData,
+                            recentOrders,
+                            topProducts,
+                            categories
                         });
                     });
                 });
             });
-        
+        });
+
     },
 
     // Products Management
-    products:   (req, res) => {
+    products: (req, res) => {
         try {
-            const products =   Admin.getAllProducts();
-            const categories =   Admin.getAllCategories();
+            const products = Admin.getAllProducts();
+            const categories = Admin.getAllCategories();
             res.render('admin/products', { products, categories });
         } catch (error) {
             console.error('Error loading products:', error);
@@ -52,12 +52,12 @@ const adminController = {
         }
     },
 
-    
+
 
     // Orders Management
-    orders:   (req, res) => {
+    orders: (req, res) => {
         try {
-            const orders =   Admin.getAllOrders();
+            const orders = Admin.getAllOrders();
             res.render('admin/orders', { orders });
         } catch (error) {
             console.error('Error loading orders:', error);
@@ -65,22 +65,10 @@ const adminController = {
         }
     },
 
-    updateOrderStatus:   (req, res) => {
-        try {
-            const orderId = req.params.id;
-            const { status } = req.body;
-              Admin.updateOrderStatus(orderId, status);
-            res.redirect('/admin/orders');
-        } catch (error) {
-            console.error('Error updating order status:', error);
-            res.status(500).send('Error updating order status');
-        }
-    },
-
     // Users Management
     users: (req, res) => {
-  
-        Admin.getAllUsers((err, users) =>{
+
+        Admin.getAllUsers((err, users) => {
             if (err) {
                 console.error('Error loading users:', error);
                 return res.status(500).send('Error loading users');
@@ -90,7 +78,7 @@ const adminController = {
                 const month = String(birthdate.getMonth() + 1).padStart(2, '0'); // Months are 0-based
                 const day = String(birthdate.getDate()).padStart(2, '0');
                 const year = String(birthdate.getFullYear()).slice(-2); // Get last two digits of year
-        
+
                 return {
                     ...user, // Spread the user object
                     formattedBirthdate: `${month}-${day}-${year}` // Add formatted birthdate
@@ -99,7 +87,7 @@ const adminController = {
 
             res.render('admin-users', { users: formattedUsers });
         }
-    )   
+        )
     },
     update_user: (req, res) => {
         const user_id = req.body.user_id;
@@ -111,9 +99,9 @@ const adminController = {
             email: req.body.email,
             birthdate: req.body.birthdate
         };
-    
+
         console.log("Updated product data:", updatedData);
-    
+
         // Update product in the database
         Admin.updateUsers(user_id, updatedData, (err) => {
             if (err) {
@@ -125,17 +113,58 @@ const adminController = {
     },
     delete_user: (req, res) => {
         const user_id = req.params.user_id;
-    
+
         Admin.deleteUsers(user_id, (err) => {
             if (err) {
                 console.error(err);
                 return res.status(500).send('Error deleting product');
             }
             res.redirect('/admin/users');
-    }) }
-    
+        })
+    },
 
-  
+
+    order: (req, res) => {
+        Admin.getAllOrders((err, orders) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send('Error fetching categories');
+            }
+            
+            res.render('admin-order', { orders }); // Render your EJS view with products and categories
+        })
+
+    },
+
+    update_order: (req, res) => {
+
+        const orderData = {
+            orderId: req.body.order_id,
+            status: req.body.status
+        }
+        console.log(orderData);
+        Admin.updateOrderStatus(orderData ,(err) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send('Error updating product');
+            }
+            res.redirect('/admin/orders');
+        });
+},
+delete_orders: (req, res) => {
+    const orderId = req.params.order_id;
+
+    Admin.deleteOrders(orderId, (err) => {
+        if (err) {
+            if (err.message === 'Order not found') {
+                return res.status(404).send('Order not found');
+            }
+            console.error(err);
+            return res.status(500).send('Error deleting order');
+        }
+        res.redirect('/admin/orders'); 
+    });
+},
 
 
 };

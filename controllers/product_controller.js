@@ -74,7 +74,7 @@ const products = {
                 console.error(err);
                 return res.status(500).send('Error deleting product');
             }
-            res.redirect('/admin/products'); // Redirect after successful deletion
+            res.redirect('/admin/products'); 
         });
     },
 
@@ -90,7 +90,7 @@ const products = {
                     console.error(err);
                     return res.status(500).send('Error fetching categories');
                 }
-                res.render('admin-product', { products, categ }); // Render your EJS view with products and categories
+                res.render('admin-product', { products, categ }); 
             })
   
         });
