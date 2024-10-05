@@ -163,14 +163,21 @@ const users = {
     }
 },
 
-  checkout:
-    (req, res) => {
-      if (req.session.email && req.session.role === 'customer') {
-        res.render('checkout', { email: req.session.email, role: req.session.role });
-      } else {
-        res.redirect('/login');
-      }
-    },
+checkout: (req, res) => {
+  if (req.session.email && req.session.role === 'customer') {
+      const userId = req.session.userId;
+      order.getTotalCartValue(userId, (err, cart) => {
+          if (err) throw err;
+          res.render('checkout', {
+              email: req.session.email,
+              role: req.session.role,
+              cart: cart || [] // Ensure cart is an empty array if no items
+          });
+      });
+  } else {
+      res.redirect('/login');
+  }
+},
 
   admin: (req, res) => {
     if (req.session.email && req.session.role === 'admin') {
