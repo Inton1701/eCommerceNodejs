@@ -130,7 +130,7 @@ const adminController = {
                 console.error(err);
                 return res.status(500).send('Error fetching categories');
             }
-            
+
             res.render('admin-order', { orders }); // Render your EJS view with products and categories
         })
 
@@ -143,30 +143,65 @@ const adminController = {
             status: req.body.status
         }
         console.log(orderData);
-        Admin.updateOrderStatus(orderData ,(err) => {
+        Admin.updateOrderStatus(orderData, (err) => {
             if (err) {
                 console.error(err);
                 return res.status(500).send('Error updating product');
             }
             res.redirect('/admin/orders');
         });
-},
-delete_orders: (req, res) => {
-    const orderId = req.params.order_id;
+    },
+    delete_orders: (req, res) => {
+        const orderId = req.params.order_id;
 
-    Admin.deleteOrders(orderId, (err) => {
-        if (err) {
-            if (err.message === 'Order not found') {
-                return res.status(404).send('Order not found');
+        Admin.deleteOrders(orderId, (err) => {
+            if (err) {
+                if (err.message === 'Order not found') {
+                    return res.status(404).send('Order not found');
+                }
+                console.error(err);
+                return res.status(500).send('Error deleting order');
             }
-            console.error(err);
-            return res.status(500).send('Error deleting order');
+            res.redirect('/admin/orders');
+        });
+    },
+
+    category: (req, res) => {
+        Admin.getAllCategories((err, categories) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send('Error fetching categories');
+            }
+            res.render('admin-category', { categories }); 
+        })
+    },
+    update_category: (req,res) =>{
+        const categoryData = {
+            category_id: req.body.category_id,
+            category_name: req.body.category_name
         }
-        res.redirect('/admin/orders'); 
-    });
-},
-
-
+        console.log(categoryData);
+        Admin.updateCategory(categoryData, (err)=>{
+            if (err) {
+                console.error(err);
+                return res.status(500).send('Error updating category');
+            }
+            res.redirect('/admin/category');
+        })
+    },
+    delete_category: (req, res) => {
+        const category_id = req.params.category_id;
+        Admin.deleteCategory(category_id, (err)=>{
+            if (err) {
+                if (err.message === 'Category not found') {
+                    return res.status(404).send('Category not found');
+                }
+                console.error(err);
+                return res.status(500).send('Error deleting category');
+            }
+            res.redirect('/admin/category');
+        })
+    }
 };
 
 module.exports = adminController;

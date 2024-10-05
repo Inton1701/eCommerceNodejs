@@ -26,9 +26,9 @@ router.get('/logout', user.logout);
 router.get('/view-product', user.view_product);
 router.get('/cart', user.cart);
 router.get('/checkout', user.checkout);
-router.get('/admin/category', category.manage_category);
-
-
+router.get('/admin/category', admin.category);
+router.post('/admin/category/update', admin.update_category);
+router.get('/admin/category/delete/:category_id', admin.delete_category); 
 
 
 router.get('/admin/users', admin.users);
@@ -57,26 +57,16 @@ router.post('/productsCrud', upload.single('image'), (req, res) => {
     res.send('Product added successfully with image!');
 });
 
-
+//ariston
 router.get('/admin/dashboard',  admin.dashboard);
-router.get('/admin/products', product.products); // Ensure product.products is defined
-router.post('/admin/products/add', upload.single('image'), product.saveProduct); // Ensure product.saveProduct is defined
-router.post('/admin/products/update', upload.single('image'), product.updateProduct); // Ensure product.updateProduct is defined
+router.get('/admin/products', product.products); 
+router.post('/admin/products/add', upload.single('image'), product.saveProduct);
+router.post('/admin/products/update', upload.single('image'), product.updateProduct); 
 router.get('/admin/products/delete/:id', product.deleteProduct); 
 
 //Cael 
 
 router.get('/shop', productController.getShopPage);
-// Admin Routes
-// router.get('/admin/dashboard',  admin.dashboard);
-// router.get('/admin/products',  admin.products);
 
-
-// // kay thien dapat
-// router.post('/admin/products/add', admin.addProduct);
-// router.put('/admin/products/edit/:id',  admin.editProduct);
-// router.delete('/admin/products/delete/:id', admin.deleteProduct);
-
-// Admin Order Management
 
 module.exports = router

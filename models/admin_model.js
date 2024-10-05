@@ -85,13 +85,6 @@ const Admin = {
 
 
 
-    getAllCategories: (callback) => {
-        db.query('SELECT * FROM categories', (error, results) => {
-            if (error) return callback(error);
-            callback(null, results);
-        });
-    },
-
     addProduct: (productData, callback) => {
         const { name, description, price, quantity, category_id, image_path } = productData;
         db.query(`
@@ -166,7 +159,22 @@ const Admin = {
             callback(null);
         });
     },
-
+    
+    getAllCategories: (callback) => {
+        const query = 'SELECT * FROM categories';
+        db.query(query, (err, results) => {
+            if (err) return callback(err);
+            callback(null, results);
+        });
+    },
+    updateCategory: (categoryData, callback) => {
+        const query = `UPDATE categories SET name =? WHERE category_id =?`;
+        db.query(query, [categoryData.category_name,categoryData.category_id], callback);
+    },
+    deleteCategory: (categoryId, callback) => {
+        const query = `DELETE FROM categories WHERE category_id =?`;
+        db.query(query, [categoryId], callback);
+    }
 };
 
 module.exports = Admin;
