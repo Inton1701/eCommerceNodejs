@@ -3,7 +3,7 @@ const user = require('../models/user_model');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 
-
+const order = require('../models/order_model');
 // Ariston
 
 
@@ -105,6 +105,7 @@ const users = {
           // If password matches, set the session and redirect to home
           req.session.email = email;
           req.session.role = is_found.role;
+          req.session.userId = is_found.user_id;
           return res.redirect('/home'); 
         } else {
           console.log('Invalid password');
@@ -152,11 +153,15 @@ const users = {
   // Go to product
   cart: (req, res) => {
     if (req.session.email && req.session.role === 'customer') {
-      res.render('cart', { email: req.session.email, role: req.session.role });
+      const userId = req.session.userId;
+      order.getTotalCartValue(userId, (err, cart) => {
+          if (err) throw err;
+          res.render('cart', { email: req.session.email, role: req.session.role, cart: cart || { total_cart_value: 0 } }); // Provide a fallback object // Use 'cart' here
+      });
     } else {
-      res.redirect('/login');
+        res.redirect('/login');
     }
-  },
+},
 
   checkout:
     (req, res) => {

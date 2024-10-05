@@ -13,76 +13,56 @@
         </div>
 
         <div class="row">
-            <!-- Billing Details Section -->
-            <div class="col-md-6 mb-5 mb-md-0">
-                <h2 class="h3 mb-3 text-black">Billing Details</h2>
-                <div class="p-3 p-lg-5 border">
-                    <div class="form-group row">
-                        <div class="col-md-6">
-                            <label for="c_fname" class="text-black">First Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="c_fname" name="c_fname">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="c_lname" class="text-black">Last Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="c_lname" name="c_lname">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-12">
-                            <label for="phone" class="text-black">Phone<span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="phone" name="phone">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-12">
-                            <label for="address" class="text-black">Address<span class="text-danger">*</span></label>
-                            <textarea name="address" id="address" class="form-control"></textarea>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+ 
             <!-- Your Order Section -->
-            <div class="col-md-6">
+             <div class="col-md-3"></div>
+            <div class="col-md-6 justify-content-center">
                 <h2 class="h3 mb-3 text-black">Your Order</h2>
                 <div class="p-3 p-lg-5 border">
-                    <table class="table site-block-order-table mb-5">
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Top Up T-Shirt <strong class="mx-2">x</strong> 1</td>
-                                <td>$250.00</td>
-                            </tr>
-                            <tr>
-                                <td>Polo Shirt <strong class="mx-2">x</strong> 1</td>
-                                <td>$100.00</td>
-                            </tr>
-                            <tr>
-                                <td class="text-black font-weight-bold"><strong>Cart Subtotal</strong></td>
-                                <td class="text-black">$350.00</td>
-                            </tr>
-                            <tr>
-                                <td class="text-black font-weight-bold"><strong>Order Total</strong></td>
-                                <td class="text-black font-weight-bold"><strong>$350.00</strong></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div style="max-height: 200px; overflow-y: auto;">
+                        <table class="table site-block-order-table mb-5">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Top Up T-Shirt <strong class="mx-2">x</strong> 1</td>
+                                    <td>$250.00</td>
+                                </tr>
+                                <tr>
+                                    <td>Polo Shirt <strong class="mx-2">x</strong> 1</td>
+                                    <td>$100.00</td>
+                                </tr>
+                                <tr>
+                                    
+                                </tr>
+                                <tr>
+                                    
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
                     <!-- Payment Methods -->
-                   
-
+                    <div class="row">
+                        <h6 class="text-secondary font-weight-bold"><strong>Cart Subtotal:</strong></h6>
+                        <p class="text-black">$350.00</p>
+                       </div>
+                       <div class="row">
+                        <h6 class="text-secondary font-weight-bold"><strong>Order Total:</strong></h6>
+                        <p class="text-black font-weight-bold"><strong>$350.00</strong></p>
+                       </div>
                     <div class="p-3 mb-5">
                         <select name="payment_method" id="payment_method" class="form-control">
-                            <option value="cod">Cash on Delivery</option>
-                            <option value="paypal">E-Wallet</option>
-                            <option value="stripe">Bank Transfer</option>
-                            <option value="stripe">Credit/Debit Card</option>
-                            <option value="stripe">Home Credit</option>
+                            <option value="Cash On Delivery">Cash on Delivery</option>
+                            <option value="E-wallet">E-Wallet</option>
+                            <option value="Bank">Bank Transfer</option>
+                            <option value="Credit-card">Credit/Debit Card</option>
+                            <option value="Home Credit">Home Credit</option>
+                            <option value="Loan Sa Card">Loan Sa Card</option>
                         </select>
                     </div>
 
@@ -91,6 +71,7 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-3"></div>
         </div>
     </div>
 </div>
