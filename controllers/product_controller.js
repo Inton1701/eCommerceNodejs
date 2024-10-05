@@ -96,8 +96,6 @@ const products = {
         });
     },
 
-    // Multer middleware export
-    upload,
 };
 
 module.exports = products;
