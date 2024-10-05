@@ -8,8 +8,7 @@ const category = require('../controllers/category_controller');
 const multer = require('multer');
 const fs = require('fs');
 const admin = require('../controllers/adminController'); // Adjust path as needed
-
-
+const path = require('path')
 //Ariston
 router.get('/', user.index);
 router.get('/login', user.login);
@@ -51,7 +50,8 @@ router.post('/admin/products/update', upload.single('image'), product.updateProd
 router.get('/admin/products/delete/:id', product.deleteProduct); 
 
 
-module.exports = router;
+router.get('/admin/users', admin.users);
+
 
 
 
@@ -60,7 +60,7 @@ module.exports = router;
 // router.get('/admin/dashboard',  admin.dashboard);
 // router.get('/admin/products',  admin.products);
 // router.get('/admin/orders', admin.orders);
-// router.get('/admin/users', admin.users);
+
 
 // // kay thien dapat
 // router.post('/admin/products/add', admin.addProduct);

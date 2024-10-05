@@ -8,7 +8,7 @@ const product = {
 
 
 
-    //Thiena Maganda
+    //Thiena Maganda & Ariston
     // Save a new product
     save: (insert, callback) => {
         const productInsertQuery = `INSERT INTO products (name, description, price, quantity, category_id, image_path)VALUES (?, ?, ?, ?, ?, ?)`;

@@ -152,10 +152,14 @@ const Admin = {
     },
 
     getAllUsers: (callback) => {
-        db.query('SELECT * FROM users WHERE role = "customer"', (error, results) => {
-            if (error) return callback(error);
-            callback(null, results);
-        });
+        const query = `SELECT * FROM users WHERE role = 'customer'`;
+                db.query(query, (err, results) => {
+                    if (err) {
+                        console.error("Error fetching users", err); 
+                        return callback(err);
+                    }
+                    callback(null, results);
+                });
     },
 };
 

@@ -110,15 +110,33 @@ const adminController = {
     },
 
     // Users Management
-    users:   (req, res) => {
-        try {
-            const users =   Admin.getAllUsers();
-            res.render('admin/users', { users });
-        } catch (error) {
-            console.error('Error loading users:', error);
-            res.status(500).send('Error loading users');
+    users: (req, res) => {
+  
+        Admin.getAllUsers((err, users) =>{
+            if (err) {
+                console.error('Error loading users:', error);
+                return res.status(500).send('Error loading users');
+            }
+            const formattedUsers = users.map(user => {
+                const birthdate = new Date(user.birthdate); // Assuming `birthdate` is a valid date field
+                const month = String(birthdate.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+                const day = String(birthdate.getDate()).padStart(2, '0');
+                const year = String(birthdate.getFullYear()).slice(-2); // Get last two digits of year
+        
+                return {
+                    ...user, // Spread the user object
+                    formattedBirthdate: `${month}-${day}-${year}` // Add formatted birthdate
+                };
+            });
+
+            res.render('admin-users', { users: formattedUsers });
         }
+    )
+     
+     
+        
     }
+
 };
 
 module.exports = adminController;
