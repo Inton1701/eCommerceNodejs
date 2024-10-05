@@ -1,3 +1,5 @@
+const multer = require('multer');
+const path = require('path');
 const p = require('../models/product_model'); // Import the product model
 const categories = require('../models/category_model'); // Import the category model
 const products = {
@@ -17,7 +19,7 @@ const products = {
             category_id: req.body.category_id 
         };
 
-        console.log("New product data:", newProduct); // Debug log
+        console.log("New product data:", newProduct);
 
         p.save(newProduct, (err) => {
             if (err) {
@@ -31,12 +33,13 @@ const products = {
     // Update product
     updateProduct: (req, res) => {
         const productId = req.body.productId;
-        let imagePath = null;
-
+        let imagePath = req.body.currentImagePath; // Assuming this is the current image path
+    
+        // If a new image is uploaded, update the image path
         if (req.file) {
             imagePath = req.file.filename;
         }
-
+    
         const updatedData = {
             name: req.body.name,
             description: req.body.description,
@@ -45,9 +48,10 @@ const products = {
             image_path: imagePath,
             category_id: req.body.category_id
         };
-
-        console.log("Updated product data:", updatedData); // Debug log
-
+    
+        console.log("Updated product data:", updatedData);
+    
+        // Update product in the database
         p.update(productId, updatedData, (err) => {
             if (err) {
                 console.error(err);
@@ -56,10 +60,11 @@ const products = {
             res.redirect('/admin/products');
         });
     },
+    
 
     // Delete a product by its ID
     deleteProduct: (req, res) => {
-        const productId = req.params.id; // Assuming the ID comes from the route parameters
+        const productId = req.params.id;
 
         p.delete(productId, (err) => {
             if (err) {
@@ -90,6 +95,9 @@ const products = {
   
         });
     },
+
+    // Multer middleware export
+    upload,
 };
 
 module.exports = products;
