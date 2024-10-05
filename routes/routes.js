@@ -7,7 +7,9 @@ const cart = require('../controllers/cart_controller');
 const category = require('../controllers/category_controller');
 const multer = require('multer');
 const fs = require('fs');
+const path = require('path');
 const admin = require('../controllers/adminController'); // Adjust path as needed
+const productController = require('../controllers/product_model');
 
 
 //Ariston
@@ -16,7 +18,7 @@ router.get('/login', user.login);
 router.get('/register', user.register);
 router.get('/home', user.home);
 router.get('/admin', user.admin);
-router.get('/shop', user.shop);
+//router.get('/shop', user.shop);
 router.post('/signup', user.signup);
 router.post('/authenticate', user.authenticate);
 
@@ -55,7 +57,9 @@ module.exports = router;
 
 
 
-//Cael - where the admin_dashboard.ejs is supposed to be
+//Cael 
+
+router.get('/shop', productController.getShopPage);
 // Admin Routes
 // router.get('/admin/dashboard',  admin.dashboard);
 // router.get('/admin/products',  admin.products);
