@@ -292,8 +292,27 @@ thankYou: (req, res) => {
     res.redirect('/login');
   }
 
+},
+viewProduct: (req, res) => {
+  const productId = req.params.id; // Get product ID from request parameters
+
+  product.getProduct(productId, (err, product) => {
+      if (err) {
+          console.error('Error fetching product:', err);
+          return res.status(500).json({ message: 'Internal Server Error' });
+      }
+      
+      if (!product) {
+
+          return res.status(404).json({ message: 'Product not found' });
+      }
+
+      // Render the view with the product data
+      res.render('view-product', { product });
+  });
 }
 }
+
 
 
 //Thiena

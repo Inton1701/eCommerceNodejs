@@ -34,7 +34,16 @@ LEFT JOIN categories ON products.category_id = categories.category_id`;
             callback(null, results);
         });
     },
-    
+    getProduct: (productId, callback) => {
+        const query = 'SELECT * FROM products WHERE product_id = ?';
+        db.query(query, [productId], (err, result) => {
+            if (err) {
+                return callback(err); 
+            }
+
+            callback(null, result.length > 0 ? result[0] : null);
+        });
+    },
 
     // Update an existing product
     update: (productId, updateData, callback) => {

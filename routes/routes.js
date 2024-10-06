@@ -19,7 +19,7 @@ router.get('/shop', user.shop);
 router.post('/signup', user.signup);
 router.post('/authenticate', user.authenticate);
 router.get('/logout', user.logout);
-router.get('/view-product', user.view_product);
+router.get('/view-product/:id', user.viewProduct);
 
 router.get('/cart', user.cart);
 router.get('/checkout', user.checkout);
