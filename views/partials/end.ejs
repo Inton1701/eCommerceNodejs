@@ -31,3 +31,73 @@
 <script src="assets/ariston/js/aos.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
 <script src="assets/ariston/js/main.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Update cart count when page loads
+        updateCartCount();
+
+        // Add to cart functionality
+        const buttons = document.querySelectorAll('.add-to-cart-btn');
+        buttons.forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-product-id');
+
+                fetch(`/shop/addCart/${productId}`, {
+                    method: 'GET',
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();  // Assumes server returns JSON
+                    }
+                    throw new Error('Failed to add product to cart');
+                })
+                .then(data => {
+                    alert('Product added to cart successfully!');
+                    // Update the cart count after adding the product
+                    updateCartCount();
+                })
+                .catch(error => {
+                    alert(`Error: ${error}`);
+                });
+            });
+        });
+
+             // Minus button
+             document.querySelectorAll('.minus').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var input = this.closest('.input-group').querySelector('input[name="quantity[]"]');
+                var currentValue = parseInt(input.value);
+                if (!isNaN(currentValue) && currentValue > 1) {
+                    input.value = currentValue - 1;
+                }
+            });
+        });
+
+        // Plus button
+        document.querySelectorAll('.plus').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var input = this.closest('.input-group').querySelector('input[name="quantity[]"]');
+                var currentValue = parseInt(input.value);
+                if (!isNaN(currentValue)) {
+                    input.value = currentValue + 1;
+                }
+            });
+        });
+
+    });
+
+    // Function to update the cart count in the UI
+    function updateCartCount() {
+        $.ajax({
+            url: '/cart/count',  // API endpoint to get the cart count
+            method: 'GET',
+            success: function(response) {
+                $('.site-cart #count').text(response.count);  // Update cart count in the HTML
+            },
+            error: function() {
+                console.error('Failed to update cart count');
+            }
+        });
+    }
+</script>

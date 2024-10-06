@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Thank You</title>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .thank-you-container {
+            margin-top: 100px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .thank-you-icon {
+            font-size: 5rem;
+            color: #28a745;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 thank-you-container text-center">
+                <div class="thank-you-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h1 class="display-4 text-success">Thank You!</h1>
+                <p class="lead">Your order has been placed successfully!</p>
+                <hr>
+                <h4>Order Summary</h4>
+                <p><strong>Total Amount:</strong><%=amount%></p>
+                <p><strong>Payment Method:</strong> <%=payment%></p>
+                <hr>
+                <p class="mt-4">We appreciate your business and hope to see you again soon!</p>
+                <a href="/home" class="btn btn-primary">Return to Homepage</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

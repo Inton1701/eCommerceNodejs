@@ -1,15 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const user = require('../controllers/user_controller');
-const order = require('../controllers/order_controller');
 const product = require('../controllers/product_controller');
-const cart = require('../controllers/cart_controller');
-const category = require('../controllers/category_controller');
+const carts = require('../controllers/cart_controller');
 const multer = require('multer');
-const fs = require('fs');
 const path = require('path');
-const admin = require('../controllers/adminController'); // Adjust path as needed
-const productController = require('../controllers/product_model');
+const admin = require('../controllers/adminController'); 
+
 
 
 //Ariston
@@ -18,24 +15,32 @@ router.get('/login', user.login);
 router.get('/register', user.register);
 router.get('/home', user.home);
 router.get('/admin', user.admin);
-//router.get('/shop', user.shop);
+router.get('/shop', user.shop);
 router.post('/signup', user.signup);
 router.post('/authenticate', user.authenticate);
-
 router.get('/logout', user.logout);
 router.get('/view-product', user.view_product);
+
 router.get('/cart', user.cart);
 router.get('/checkout', user.checkout);
+router.post('/checkout/place_order', user.placeOrders);
+router.get('/checkout/success', user.thankYou)
+
+router.get('/cart/count', carts.getCartCount);
+router.post('/cart/update', carts.updateCart);
+router.get('/cart/delete/:cart_id', carts.deleteCart);
+
+router.get('/shop/addCart/:id', carts.addCart);
+
+
+
+
 router.get('/admin/category', admin.category);
 router.post('/admin/category/update', admin.update_category);
 router.get('/admin/category/delete/:category_id', admin.delete_category); 
-
-
 router.get('/admin/users', admin.users);
-
 router.post('/admin/users/update', admin.update_user);
 router.get('/admin/users/delete/:user_id', admin.delete_user);
-
 router.get('/admin/orders', admin.order);
 router.post('/admin/orders/update', admin.update_order);
 router.get('/admin/orders/delete/:order_id', admin.delete_orders); 
@@ -66,7 +71,7 @@ router.get('/admin/products/delete/:id', product.deleteProduct);
 
 //Cael 
 
-router.get('/shop', productController.getShopPage);
+// router.get('/shop', productController.getShopPage);
 
 
 module.exports = router

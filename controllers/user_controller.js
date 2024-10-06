@@ -2,8 +2,9 @@
 const user = require('../models/user_model');
 const path = require('path');
 const bcrypt = require('bcryptjs');
-
+const product = require('../models/product_model');
 const order = require('../models/order_model');
+const cart = require('../models/cart_model');
 // Ariston
 
 
@@ -84,7 +85,7 @@ const users = {
         if (password === admin_password) {
           req.session.email = email;
           req.session.role = 'admin';
-          return res.redirect('/admin/dashboard'); 
+          return res.redirect('/admin/dashboard');
         } else {
           console.log('Invalid admin password');
           return res.redirect('/login');
@@ -92,7 +93,7 @@ const users = {
       }
 
       // Else check if the user role is customer
-     else if (!is_found) {
+      else if (!is_found) {
         console.log('User not found');
         return res.redirect('/login');
       }
@@ -106,31 +107,47 @@ const users = {
           req.session.email = email;
           req.session.role = is_found.role;
           req.session.userId = is_found.user_id;
-          return res.redirect('/home'); 
+          console.log("id: " + req.session.userId)
+          return res.redirect('/home');
         } else {
           console.log('Invalid password');
-          return res.redirect('/login'); 
+          return res.redirect('/login');
         }
       } catch (error) {
         console.log('Error verifying password:', error);
         return res.redirect('/login');
       }
     });
-},
+  },
+
+
+
   // Go to shop
   shop: (req, res) => {
     if (req.session.email && req.session.role === 'customer') {
-      res.render('shop', { email: req.session.email, role: req.session.role });
+      console.log("Fetching products..."); // Add this log
+      product.getAllProducts((err, products) => {
+        if (err) {
+          console.error('Error fetching products:', err);
+          return res.status(500).send('Internal Server Error');
+        }
+
+        console.log("Products fetched:", products);
+
+        res.render('shop', { email: req.session.email, role: req.session.role, products: products, userId: req.session.userId });
+      });
     } else {
-      res.redirect('/login');  
+      req.session.destroy();
+      return res.redirect('/login');
     }
+
   },
   // Go to home
   home: (req, res) => {
     if (req.session.email && req.session.role === 'customer') {
       res.render('home', { email: req.session.email });
     } else {
-      res.redirect('/login'); 
+      res.redirect('/login');
     }
   },
   // Go to login page and destroy session
@@ -139,6 +156,7 @@ const users = {
       if (err) {
         console.log('Error destroying session', err);
       }
+      console.log('Session destroyed')
       res.redirect('/login');
     });
   },
@@ -147,47 +165,136 @@ const users = {
     if (req.session.email && req.session.role === 'customer') {
       res.render('view-product', { email: req.session.email, role: req.session.role });
     } else {
-      res.redirect('/login'); nt
+      res.redirect('/login');
     }
   },
   // Go to product
   cart: (req, res) => {
     if (req.session.email && req.session.role === 'customer') {
-      const userId = req.session.userId;
-      order.getTotalCartValue(userId, (err, cart) => {
-          if (err) throw err;
-          res.render('cart', { email: req.session.email, role: req.session.role, cart: cart || { total_cart_value: 0 } }); // Provide a fallback object // Use 'cart' here
-      });
+        const userId = req.session.userId;
+        console.log('User ID:', userId); 
+        order.getCartItem(userId, (err, cartItems) => {
+            if (err) {
+                console.error('Error fetching cart items:', err); 
+                return res.status(500).json({ message: 'Error fetching cart items' });
+            }
+            order.getTotalCartValue(userId, (err, total) => {
+                if (err) {
+                    console.error('Error fetching total cart value:', err); 
+                    return res.status(500).json({ message: 'Error fetching total cart value' });
+                }
+                console.log('Total Cart Value:', total);
+
+                const totalCartValue = total && total.total_cart_value ? Number(total.total_cart_value) : 0;
+
+                const cart = {
+                    items: cartItems,
+                    total_cart_value: totalCartValue
+                };
+
+        
+                res.render('cart', {
+                    email: req.session.email,
+                    role: req.session.role,
+                    userid: userId,
+                    cart: cart.items,
+                    total: cart.total_cart_value, 
+                });
+            });
+        });
     } else {
         res.redirect('/login');
     }
 },
-
+// load check out page
 checkout: (req, res) => {
   if (req.session.email && req.session.role === 'customer') {
       const userId = req.session.userId;
-      order.getTotalCartValue(userId, (err, cart) => {
-          if (err) throw err;
-          res.render('checkout', {
-              email: req.session.email,
-              role: req.session.role,
-              cart: cart || [] 
+      console.log('User ID:', userId); 
+      order.getCartItem(userId, (err, cartItems) => {
+          if (err) {
+              console.error('Error fetching cart items:', err); 
+              return res.status(500).json({ message: 'Error fetching cart items' });
+          }
+          order.getTotalCartValue(userId, (err, total) => {
+              if (err) {
+                  console.error('Error fetching total cart value:', err);
+                  return res.status(500).json({ message: 'Error fetching total cart value' });
+              }
+              console.log('Total Cart Value:', total);
+
+              const totalCartValue = total && total.total_cart_value ? Number(total.total_cart_value) : 0;
+
+              const cart = {
+                  items: cartItems,
+                  total_cart_value: totalCartValue 
+              };
+
+              res.render('checkout', {
+                  email: req.session.email,
+                  role: req.session.role,
+                  userid: userId,
+                  cart: cart.items,
+                  total: cart.total_cart_value, 
+              });
           });
       });
   } else {
       res.redirect('/login');
   }
 },
-
+// load admin
   admin: (req, res) => {
     if (req.session.email && req.session.role === 'admin') {
       res.render('admin', { email: req.session.email, role: req.session.role });
     } else {
-      res.redirect('/login');  // Redirect to login if session is not present
+      res.redirect('/login');
     }
+  },
+  // place order
+  placeOrders: (req, res) => {
+    const userId = req.body.userid; 
+    const paymentMethod = req.body.payment_method;
+    const productIds = req.body.product_id || []; 
+    const quantities = req.body.quantity || []; 
+    const prices = req.body.price || []; 
+
+
+    if (!userId || productIds.length === 0 || quantities.length === 0 || prices.length === 0) {
+      console.log(userId, productIds,prices, quantities)
+        return res.status(400).json({ message: 'Invalid order data' });
+    }
+
+    const orderData = {
+        total_price: parseFloat(req.body.total) || 0,
+        paymethod: paymentMethod,
+        items: productIds.map((id, index) => ({
+            product_id: id,
+            quantity: quantities[index] || 0,
+            price: prices[index] || 0, 
+        })),
+    };
+
+    order.placeOrder(userId, orderData)
+        .then(result => {
+            return res.render('thank-you', {payment: orderData.paymethod, amount:orderData.total_price}); 
+        })
+        .catch(err => {
+            console.error('Error placing order:', err);
+            return res.status(500).json({ message: 'Internal Server Error' });
+        });
+},
+// load when the order is successfull
+thankYou: (req, res) => {
+  if (req.session.email && req.session.role === 'customer') {
+    res.render('thank-you')
+  }else{
+    res.redirect('/login');
   }
 
 }
+}
+
 
 //Thiena
 
