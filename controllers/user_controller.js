@@ -171,7 +171,7 @@ checkout: (req, res) => {
           res.render('checkout', {
               email: req.session.email,
               role: req.session.role,
-              cart: cart || [] // Ensure cart is an empty array if no items
+              cart: cart || [] 
           });
       });
   } else {
